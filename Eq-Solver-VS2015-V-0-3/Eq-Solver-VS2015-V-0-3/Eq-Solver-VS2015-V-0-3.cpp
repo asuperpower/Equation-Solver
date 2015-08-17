@@ -19,6 +19,9 @@ aussian elimination and classes.
 #include <string.h>
 #include <windows.h>
 #include <cmath>
+#include <vector>
+
+#pragma warning(disable: 4018)
 
 enum error
 {
@@ -28,24 +31,46 @@ enum error
 class matrix
 {
 private:
+	int amount;
 	int size;
-	int start;
 	int zeroPoint;
+	std::string row;
 public:
-	void matrixSet(int, int, int);
-	void input()
+	void matrixSet(int, int, std::string);
+	void getValues(int&, int&, std::string&);
+	bool checckInput();
 };
 
-void matrix::matrixSet(int length, int begin, int zero)
+bool matrix::checckInput()
 {
-	size = length;
-	start = begin;
-	zeroPoint = zero;
+	/*+==================================================
+	Checks that the string 'row' are all valid integers/floats/doubles.
+	Example string for setup: 2 variables, 2 eqn.
+	4,2,3;6,-1,-4;
+	an equivalent set of solutions would be:
+		{4x +  2y	=	 3
+		{6x + -1y	=	-4
+	==================================================+*/
+	std::string allowed = "1234567890+-.eE";
+	std::string segment = ";,"
+	for (unsigned int i = 0; i < row.length(); i++)
+	{
+		
+	}
 }
 
-void matrix::input()
+void matrix::matrixSet(int noEqn, int noVar, std::string input)
 {
+	amount = noVar;
+	size = noEqn;
+	row = input;
+}
 
+void matrix::getValues(int &noEqn, int &noVar, std::string &input)
+{
+	noEqn = amount;
+	noVar = size;
+	input = row;
 }
 
 void error(int code, std::string input)
@@ -58,7 +83,7 @@ void error(int code, std::string input)
 	}	
 }
 
-bool integer(std::string input)
+void integer(std::string input)
 {
 	for (unsigned int i = 0; i < input.length(); i++)
 	{
@@ -73,40 +98,74 @@ bool integer(std::string input)
 		}
 		if (!match)
 		{
-			return false;
+			error(A0, input);
 		}
 	}
-	return true;
+	return;
+}
+
+void getInput(const int noEqn, const int noVar)
+{
+	std::vector<matrix> equation(noEqn);
+	for (unsigned int i = 1; i <= noEqn; i++)//cycles through each equation
+	{
+		matrix *row;
+		std::string buffer;
+		std::string input;
+		for (unsigned int j = 1; j <= noVar; j++)
+		{
+			std::cout << "Please enter variable " << j << ".\n>";
+			std::cin >> buffer;
+			input += (buffer + ",");//adds a comma to comma seperate the values
+			if (j == noVar)//asks for answer on last pass
+			{
+				std::cout << "Please enter the solution to equation " << i << ".\n>";
+				std::cin >> buffer;
+				input += (buffer + ";");//done so the input doesn't get overwritten by cin., also adds a semicolon to show the end of a matrix.
+			}
+		}
+		row = new matrix;
+		row->matrixSet(noVar, noEqn, input);
+		equation.push_back(*row);
+		delete row;//stop memory leaks or smth?
+	}
+}
+
+void findOrSetOne(const int noEqn, const int noVar)
+{
+	std::vector<matrix> equation(noEqn);
+	for (unsigned int i = 1; i <= noEqn; i ++)
+	{
+		int noEqn = 0;
+		int noVar = 0;
+		std::string input;
+		equation(i).getValues(noEqn, noVar, input);
+
+		processInput
+
+		for (unsigned int j = 1; j <= ((noEqn*noVar) + noEqn); j += (noVar + 1))//(noEqn*noVar) + noEqn //noEqn is there to add another column for the answers.
+		{
+			
+		}
+	}
 }
 
 int main()
 {
 	std::string input;
 
-	std::cout << "\nHow many equations\n";
+	std::cout << "How many equations?\n>";
 	std::cin >> input;
-	if (!integer(input))
-	{
-		error(A0, input);
-		exit(A0);
-	}
+	integer(input);
 	const int noEqn = (int)atoi(input.c_str());
 
-	std::cout << "\nHow many variables?\n";
+	std::cout << "How many variables?\n>";
 	std::cin >> input;
-	if (!integer(input))
-	{
-		error(A0, input);
-		exit(A0);
-	}
+	integer(input);
 	const int noVar = (int)atoi(input.c_str());
 
-	//need to put this in a method for matrix class and then this is repeated for each row.
-	for (unsigned int i = 1; i <= noVar; i++)
-	{
-		std::cout << "\nVariable " << i + 1 << ": \n";
-		std::cin >> input;
-	}
-
+	getInput(noEqn, noVar);
+	findOrSetOne(noEqn, noVar);
+	
 	return 0;
 }
