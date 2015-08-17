@@ -38,6 +38,7 @@ private:
 public:
 	void matrixSet(int, int, std::string);
 	void getValues(int&, int&, std::string&);
+	void getValues(int&, int&, int&, std::string&);
 	bool checckInput();
 };
 
@@ -52,7 +53,7 @@ bool matrix::checckInput()
 		{6x + -1y	=	-4
 	==================================================+*/
 	std::string allowed = "1234567890+-.eE";
-	std::string segment = ";,"
+	std::string segment = ";,";
 	for (unsigned int i = 0; i < row.length(); i++)
 	{
 		
@@ -71,6 +72,14 @@ void matrix::getValues(int &noEqn, int &noVar, std::string &input)
 	noEqn = amount;
 	noVar = size;
 	input = row;
+}
+
+void matrix::getValues(int &noEqn, int &noVar, int &zero, std::string &input)
+{
+	noEqn = amount;
+	noVar = size;
+	input = row;
+	zero = zeroPoint;
 }
 
 void error(int code, std::string input)
@@ -106,7 +115,7 @@ void integer(std::string input)
 
 void getInput(const int noEqn, const int noVar)
 {
-	std::vector<matrix> equation(noEqn);
+	std::vector<matrix*> equation;
 	for (unsigned int i = 1; i <= noEqn; i++)//cycles through each equation
 	{
 		matrix *row;
@@ -126,22 +135,23 @@ void getInput(const int noEqn, const int noVar)
 		}
 		row = new matrix;
 		row->matrixSet(noVar, noEqn, input);
-		equation.push_back(*row);
+		equation.push_back(row);
 		delete row;//stop memory leaks or smth?
 	}
 }
 
 void findOrSetOne(const int noEqn, const int noVar)
 {
-	std::vector<matrix> equation(noEqn);
+	std::vector<matrix> equation();
 	for (unsigned int i = 1; i <= noEqn; i ++)
 	{
 		int noEqn = 0;
 		int noVar = 0;
 		std::string input;
+		matrix temp = equation[i];
 		equation(i).getValues(noEqn, noVar, input);
 
-		processInput
+		//processInput
 
 		for (unsigned int j = 1; j <= ((noEqn*noVar) + noEqn); j += (noVar + 1))//(noEqn*noVar) + noEqn //noEqn is there to add another column for the answers.
 		{
